@@ -151,13 +151,31 @@ async function callApi (datos){
     const precio = restroom[tipoSeleccionado] !== undefined ? `$${restroom[tipoSeleccionado]}` : "No definido";
 
     ventanaImpr.document.write(`
-        <html>
+          <html>
             <head>
                 <title>Imprimir QR</title>
                 <style>
                     body { text-align: center; font-family: Arial, sans-serif; }
                     h1, h3 { margin: 5px; }
                     .qr-container { display: flex; justify-content: center; margin-top: 10px; }
+                    .close-btn {
+                        background-color: red;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        margin-top: 20px;
+                        border-radius: 5px;
+                    }
+                    .close-btn:hover {
+                        background-color: darkred;
+                    }
+                    @media print {
+                        .close-btn {
+                            display: none;
+                        }
+                    }
                 </style>
             </head>
             <body>
@@ -170,6 +188,7 @@ async function callApi (datos){
                 <div class="qr-container">
                     ${document.getElementById('contenedorQR').innerHTML}
                 </div>
+                <button type="button" class="close-btn" onclick="window.close();">Cerrar</button>
             </body>
         </html>
     `);

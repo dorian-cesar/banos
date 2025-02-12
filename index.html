@@ -95,7 +95,7 @@
         document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("button[onclick='pago()']").addEventListener("click", function () {
         let tipoServicio = document.querySelector("input[name='tipo']:checked").value;
-        let valor = tipoServicio === "Ducha" ? 2000 : 500;
+        let valor = tipoServicio === "Ducha" ? 4000 : 500;
 
         let payload = {
             "codigoEmpresa": "89",
