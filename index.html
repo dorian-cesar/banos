@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restroom</title>
+    <link rel="stylesheet" href="Styles/style.css" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script defer src="JS/appRestroom.js"></script>
+    <script defer src="JS/valores.js"></script>
+    <style>
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.close {
+    color: red;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Baños</h1>
+        <div class="izquierda">
+            <form id="formulario" class="formulario">
+                <input type="text" id="keycont" disabled/>
+                <button class="btn" id="generar">Generar QR</button>
+            </form>
+            <div class="contenedorQR" id="contenedorQR"></div>
+            <button class="btn" onclick="printQR()">Imprimir</button>
+            <button class="btn" onclick="pago()">pagar</button>
+            <button id="imprimirBoleta" style="display: none;">Imprimir Boleta</button>
+        </div>
+        <div class="derecha">
+            <div class="conttipo">
+                <div class="bultotxt">
+                    <ul>
+                        <li>
+                            <input type='radio' value='Toilet' name='tipo' id='radio1' checked/>
+                            <label class="radiolbl" type='radio' for='radio1'>Baños $500</label>
+                        </li>
+                        <li>
+                            <input type='radio' value='Ducha' name='tipo'  id='radio2'/>
+                            <label class="radiolbl" type='radio' for='radio2'>Ducha $4000</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="conttabla" style="height:80%">
+                <table class="thist">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Codigo</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+<div id="modalPago" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="contenidoModal"></div>
+    </div>
+</div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector("button[onclick='pago()']").addEventListener("click", function () {
+        let tipoServicio = document.querySelector("input[name='tipo']:checked").value;
+        let valor = tipoServicio === "Ducha" ? 2000 : 500;
+
+        let payload = {
+            "codigoEmpresa": "89",
+            "tipoDocumento": "39",
+            "total": valor,
+            "detalleBoleta": `53-${valor}-1-dsa-${tipoServicio}`
+        };
+
+        fetch("https://qa.pullman.cl/srv-dte-web/rest/emisionDocumentoElectronico/generarDocumento", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            let contenidoModal = document.getElementById("contenidoModal");
+            if (data.respuesta === "OK") {
+                contenidoModal.innerHTML = `
+                    <p><strong>Boleta generada con éxito.</strong></p>
+                    <p><strong>Folio:</strong> ${data.folio}</p>
+                    <p><strong>Fecha:</strong> ${data.fecha}</p>
+                    <br>
+                    <br>
+                    <a href='${data.rutaAcepta}' target='_blank' class='btn btn-success mt-2'>Ver Boleta</a>
+                `;
+            } else {
+                contenidoModal.innerHTML = "<p style='color:red;'>Error al generar la boleta.</p>";
+            }
+            abrirModal();
+        })
+        .catch(() => {
+            document.getElementById("contenidoModal").innerHTML = "<p style='color:red;'>Error en la comunicación con el servidor.</p>";
+            abrirModal();
+        });
+    });
+
+    // Función para abrir el modal
+    function abrirModal() {
+        document.getElementById("modalPago").style.display = "block";
+    }
+
+    // Cerrar modal cuando se presiona la 'X'
+    document.querySelector(".close").addEventListener("click", function () {
+        document.getElementById("modalPago").style.display = "none";
+    });
+
+    // Cerrar modal si se hace clic fuera del contenido
+    window.addEventListener("click", function (event) {
+        let modal = document.getElementById("modalPago");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custodia</title>
+    <link rel="stylesheet" href="Styles/style.css" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Custodia</h1>
+        <div class="izquierda">
+            <form id="formulario" class="formulario">
+                <input type="text" id="casillero" placeholder="Casillero" disabled/>
+                <input type="text" id="rut" placeholder="XXXXXXXX-X"/>
+                <button class="btn" id="generar">Generar QR</button>
+            </form>
+            <div class="contenedorQR" id="contQR"></div>
+            <button class="btn" onclick="printQR()">Imprimir</button>
+            <a href="boleta.html"><button class="btn" >Escanear</button></a>
+        </div>
+        <div class="derecha">
+            <div class="contbulto">
+                <div class="bultotxt">
+                    <b><label class="bulto">Seleccione el Tamaño</label></b>
+                    <select name="bulto" id="bulto"> 
+                        <option value=0 class="select-items selectClass">Seleccione</option>
+                        <option value="Small" class="select-items selectClass">Small</option>
+                        <option value="Medium" class="select-items selectClass">Medium</option>
+                        <option value="Large" class="select-items selectClass">Large</option>
+                    </select>
+                </div>
+            </div>
+            <div id="matriz" class="contlocker"></div>
+            <div class="conttabla">
+                <table class="thist">
+                    <thead class="thist">
+                        <tr class="thist">
+                            <th class="thist">ID</th>
+                            <th class="thist">Lckr</th>
+                            <th class="thist">RUT</th>
+                            <th class="thist">Entrada</th>
+                            <th class="thist">Salida</th>
+                            <th class="thist">Tamaño</th>
+                            <th class="thist">Tipo</th>
+                            <th class="thist">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="thist" id="tabla-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<script defer src="JS/appCust.js"></script>
+</html>
