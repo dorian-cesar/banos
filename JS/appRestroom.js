@@ -151,7 +151,7 @@ async function callApi (datos){
     const precio = restroom[tipoSeleccionado] !== undefined ? `$${restroom[tipoSeleccionado]}` : "No definido";
 
     ventanaImpr.document.write(`
-          <html>
+        <html>
             <head>
                 <title>Imprimir QR</title>
                 <style>
@@ -178,7 +178,7 @@ async function callApi (datos){
                     }
                 </style>
             </head>
-            <body>
+            <body onload="window.print(); setTimeout(() => window.close(), 500);">
                 <h1>Ticket de Acceso</h1>
                 <h3>Fecha: ${fechaStr}</h3>
                 <h3>Hora: ${horaStr}</h3>
@@ -193,10 +193,6 @@ async function callApi (datos){
         </html>
     `);
     ventanaImpr.document.close();
-    
-    setTimeout(function() {
-        ventanaImpr.print();
-    }, 500);
 }
 
 
