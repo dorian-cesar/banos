@@ -92,7 +92,7 @@
     </div>
 </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("button[onclick='pago()']").addEventListener("click", function () {
         let tipoServicio = document.querySelector("input[name='tipo']:checked").value;
         let valor = tipoServicio === "Ducha" ? 4000 : 500;
@@ -111,45 +111,28 @@
         })
         .then(response => response.json())
         .then(data => {
-            let contenidoModal = document.getElementById("contenidoModal");
             if (data.respuesta === "OK") {
-                contenidoModal.innerHTML = `
-                    <p><strong>Boleta generada con éxito.</strong></p>
-                    <p><strong>Folio:</strong> ${data.folio}</p>
-                    <p><strong>Fecha:</strong> ${data.fecha}</p>
-                    <br>
-                    <br>
-                    <a href='${data.rutaAcepta}' target='_blank' class='btn btn-success mt-2'>Ver Boleta</a>
-                `;
+                // Abrir la boleta en una nueva pestaña
+                let nuevaVentana = window.open(data.rutaAcepta, "_blank");
+
+                if (nuevaVentana) {
+                    // Esperar 10 segundos y cerrar la pestaña del PDF
+                    setTimeout(() => {
+                        nuevaVentana.close();
+                    }, 10000); // 10 segundos de espera antes de cerrar
+                } else {
+                    alert("Por favor, habilita las ventanas emergentes para ver la boleta.");
+                }
             } else {
-                contenidoModal.innerHTML = "<p style='color:red;'>Error al generar la boleta.</p>";
+                alert("Error al generar la boleta.");
             }
-            abrirModal();
         })
         .catch(() => {
-            document.getElementById("contenidoModal").innerHTML = "<p style='color:red;'>Error en la comunicación con el servidor.</p>";
-            abrirModal();
+            alert("Error en la comunicación con el servidor.");
         });
     });
-
-    // Función para abrir el modal
-    function abrirModal() {
-        document.getElementById("modalPago").style.display = "block";
-    }
-
-    // Cerrar modal cuando se presiona la 'X'
-    document.querySelector(".close").addEventListener("click", function () {
-        document.getElementById("modalPago").style.display = "none";
-    });
-
-    // Cerrar modal si se hace clic fuera del contenido
-    window.addEventListener("click", function (event) {
-        let modal = document.getElementById("modalPago");
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    });
 });
+
 
     </script>
 </body>
