@@ -221,6 +221,11 @@ async function callApi (datos){
     }
 }
 
+setTimeout(() => {
+    console.log("Después de 1 segundo");
+}, 1000); // 1000 ms = 1 segundo
+
+
 // Función para asignar niveles de acceso al usuario
  function addUserAccessLevel(token) {
   const url = urlBase+'/TerminalCalama/PHP/Restroom/addLevelUser.php';
