@@ -52,9 +52,15 @@ var numero=0
       genQR.disabled = false;
       genQR.classList.remove('disabled');
       addUser(numeroT);
-      let name=numeroT.substring(0,6);
-      console.log(name);
-      addUserAccessLevel(name);
+      
+
+      setTimeout(() => {
+        let name = numeroT.substring(0, 6);
+        console.log(name);
+        addUserAccessLevel(name);
+    }, 1000)
+
+      
     });
 
 });
@@ -196,16 +202,13 @@ async function callApi (datos){
 }
 
 
-    function addUser(token) {
-    const url = urlBase+'/TerminalCalama/PHP/Restroom/addUser.php';
 
-    const userData = {
-        pin: token,
-        idNo: token
-    };
+async function addUser(token) {
+    const url = urlBase + '/TerminalCalama/PHP/Restroom/addUser.php';
+    const userData = { pin: token, idNo: token };
 
     try {
-        let response =  fetch(url, {
+        let response = await fetch(url, {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -214,39 +217,34 @@ async function callApi (datos){
             body: JSON.stringify(userData)
         });
 
-        let result =  response.text();
+        let result = await response.text(); // Esperar a que la respuesta se convierta en texto
         console.log('Respuesta de addUser:', result);
     } catch (error) {
         console.error('Error al agregar usuario:', error);
     }
 }
 
-setTimeout(() => {
-    console.log("Después de 1 segundo");
-}, 1000); // 1000 ms = 1 segundo
+
 
 
 // Función para asignar niveles de acceso al usuario
- function addUserAccessLevel(token) {
-  const url = urlBase+'/TerminalCalama/PHP/Restroom/addLevelUser.php';
+async function addUserAccessLevel(token) {
+    const url = urlBase + '/TerminalCalama/PHP/Restroom/addLevelUser.php';
+    const accessData = { pin: token };
 
-  const accessData = {
-      pin: token
-  };
+    try {
+        let response = await fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(accessData)
+        });
 
-  try {
-      let response =  fetch(url, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(accessData)
-      });
-
-      let result =  response.text();
-      console.log('Respuesta de addLevelUser:', result);
-  } catch (error) {
-      console.error('Error al asignar niveles de acceso:', error);
-  }
+        let result = await response.text(); // Esperar la respuesta
+        console.log('Respuesta de addLevelUser:', result);
+    } catch (error) {
+        console.error('Error al asignar niveles de acceso:', error);
+    }
 }
